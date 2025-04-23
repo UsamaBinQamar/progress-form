@@ -1,30 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { motion } from "framer-motion";
 import {
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
+  createTheme,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
-  Typography,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
   Stack,
-  createTheme,
+  TextField,
   ThemeProvider,
+  Typography,
 } from "@mui/material";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Define custom theme
 const theme = createTheme({
