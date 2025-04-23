@@ -91,6 +91,7 @@ export default function ResidencyForm() {
         daysInUK: false,
         specialCircumstanceDays: false,
         visitsToUK: false,
+        additionalComments: false,
       }));
     } else {
       setEnabledFields((prev) => ({
@@ -99,6 +100,7 @@ export default function ResidencyForm() {
         daysInUK: true,
         specialCircumstanceDays: false,
         visitsToUK: false,
+        additionalComments: false,
       }));
     }
   };
@@ -161,162 +163,137 @@ export default function ResidencyForm() {
             </Select>
           </FormControl>
 
-          {/* Tax Year Circumstances - Only show for Non-UK Resident */}
-          {residenceCircumstances === "non_uk_resident" && (
-            <motion.div
-              initial={{ opacity: 0.5 }}
-              animate={{ opacity: enabledFields.circumstances ? 1 : 0.5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                Please select all relevant Tax Year circumstances
-              </Typography>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("hadHomeInCountry")}
-                      onChange={(e) => {
-                        form.setValue("hadHomeInCountry", e.target.checked);
-                        enableNextField("circumstances", "daysInUK");
-                      }}
-                    />
-                  }
-                  label="I had a home in the country of residence"
+          {/* Tax Year Circumstances */}
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Please select all relevant Tax Year circumstances
+          </Typography>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("hadHomeInCountry")}
+                  onChange={(e) => {
+                    form.setValue("hadHomeInCountry", e.target.checked);
+                    if (residenceCircumstances === "non_uk_resident") {
+                      enableNextField("hadHomeInCountry", "daysInUK");
+                    }
+                  }}
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("wasWorkingFullTime")}
-                      onChange={(e) =>
-                        form.setValue("wasWorkingFullTime", e.target.checked)
-                      }
-                    />
+              }
+              label="I had a home in the country of residence"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("wasWorkingFullTime")}
+                  onChange={(e) =>
+                    form.setValue("wasWorkingFullTime", e.target.checked)
                   }
-                  label="I was working full time in the country of residence"
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("paidTaxOnUKIncome")}
-                      onChange={(e) =>
-                        form.setValue("paidTaxOnUKIncome", e.target.checked)
-                      }
-                    />
+              }
+              label="I was working full time in the country of residence"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("paidTaxOnUKIncome")}
+                  onChange={(e) =>
+                    form.setValue("paidTaxOnUKIncome", e.target.checked)
                   }
-                  label="I paid tax on my UK income in the country of residence"
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("wasResidentPreviousYear")}
-                      onChange={(e) =>
-                        form.setValue(
-                          "wasResidentPreviousYear",
-                          e.target.checked
-                        )
-                      }
-                    />
+              }
+              label="I paid tax on my UK income in the country of residence"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("wasResidentPreviousYear")}
+                  onChange={(e) =>
+                    form.setValue("wasResidentPreviousYear", e.target.checked)
                   }
-                  label="I was resident in the UK in the previous Tax year"
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("wasResidentPreviousThreeYears")}
-                      onChange={(e) =>
-                        form.setValue(
-                          "wasResidentPreviousThreeYears",
-                          e.target.checked
-                        )
-                      }
-                    />
+              }
+              label="I was resident in the UK in the previous Tax year"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("wasResidentPreviousThreeYears")}
+                  onChange={(e) =>
+                    form.setValue(
+                      "wasResidentPreviousThreeYears",
+                      e.target.checked
+                    )
                   }
-                  label="I was resident in the UK in the previous three tax years"
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={!enabledFields.circumstances}
-                      checked={form.watch("wasNotResidentPreviousYear")}
-                      onChange={(e) =>
-                        form.setValue(
-                          "wasNotResidentPreviousYear",
-                          e.target.checked
-                        )
-                      }
-                    />
+              }
+              label="I was resident in the UK in the previous three tax years"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={!enabledFields.circumstances}
+                  checked={form.watch("wasNotResidentPreviousYear")}
+                  onChange={(e) =>
+                    form.setValue(
+                      "wasNotResidentPreviousYear",
+                      e.target.checked
+                    )
                   }
-                  label="I was not Resident in the UK in the previous Tax Year"
                 />
-              </FormGroup>
-            </motion.div>
-          )}
+              }
+              label="I was not Resident in the UK in the previous Tax Year"
+            />
+          </FormGroup>
 
-          {/* Days in UK - Show when enabled and not Non-UK Resident */}
-          {(residenceCircumstances === "uk_resident" ||
-            residenceCircumstances === "split_year" ||
-            enabledFields.daysInUK) && (
-            <motion.div
-              initial={{ opacity: 0.5 }}
-              animate={{ opacity: enabledFields.daysInUK ? 1 : 0.5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  fullWidth
-                  label="Number of days spent in the UK during the tax year"
-                  disabled={!enabledFields.daysInUK}
-                  {...form.register("daysInUK")}
-                  onChange={(e) => {
-                    form.setValue("daysInUK", e.target.value);
-                    enableNextField("daysInUK", "specialCircumstanceDays");
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Number of UK days attributable to special circumstances"
-                  disabled={!enabledFields.specialCircumstanceDays}
-                  {...form.register("specialCircumstanceDays")}
-                  onChange={(e) => {
-                    form.setValue("specialCircumstanceDays", e.target.value);
-                    enableNextField("specialCircumstanceDays", "visitsToUK");
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Number of visits to the UK in the tax year"
-                  disabled={!enabledFields.visitsToUK}
-                  {...form.register("visitsToUK")}
-                  onChange={(e) => {
-                    form.setValue("visitsToUK", e.target.value);
-                    enableNextField("visitsToUK", "additionalComments");
-                  }}
-                />
-              </Stack>
-            </motion.div>
-          )}
-
-          {/* Additional Comments */}
-          <motion.div
-            initial={{ opacity: 0.5 }}
-            animate={{ opacity: enabledFields.additionalComments ? 1 : 0.5 }}
-            transition={{ duration: 0.3 }}
-          >
+          {/* Days in UK Section */}
+          <Stack direction="row" spacing={2}>
             <TextField
               fullWidth
-              multiline
-              rows={3}
-              label="Any additional comments about residency status"
-              disabled={!enabledFields.additionalComments}
-              {...form.register("additionalComments")}
+              label="Number of days spent in the UK during the tax year"
+              disabled={!enabledFields.daysInUK}
+              {...form.register("daysInUK")}
+              onChange={(e) => {
+                form.setValue("daysInUK", e.target.value);
+                enableNextField("daysInUK", "specialCircumstanceDays");
+              }}
             />
-          </motion.div>
+            <TextField
+              fullWidth
+              label="Number of UK days attributable to special circumstances"
+              disabled={!enabledFields.specialCircumstanceDays}
+              {...form.register("specialCircumstanceDays")}
+              onChange={(e) => {
+                form.setValue("specialCircumstanceDays", e.target.value);
+                enableNextField("specialCircumstanceDays", "visitsToUK");
+              }}
+            />
+            <TextField
+              fullWidth
+              label="Number of visits to the UK in the tax year"
+              disabled={!enabledFields.visitsToUK}
+              {...form.register("visitsToUK")}
+              onChange={(e) => {
+                form.setValue("visitsToUK", e.target.value);
+                enableNextField("visitsToUK", "additionalComments");
+              }}
+            />
+          </Stack>
+
+          {/* Additional Comments */}
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            label="Any additional comments about residency status"
+            disabled={!enabledFields.additionalComments}
+            {...form.register("additionalComments")}
+          />
 
           <Stack
             direction="row"
